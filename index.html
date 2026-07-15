@@ -56,6 +56,12 @@
         .btn-outline { background-color: var(--white); border: 2px solid var(--primary); color: var(--primary); }
         .btn-danger { background-color: var(--white); border: 2px solid var(--accent); color: var(--accent); }
         .btn-icon { padding: 8px; min-height: 44px; display: flex; align-items: center; justify-content: center; background: none; font-size: 1.5rem;}
+        .btn-header-back {
+            padding: 8px 14px; min-height: 42px; border: 2px solid var(--primary);
+            background: var(--white); color: var(--primary); border-radius: 10px;
+            font-size: 1rem; white-space: nowrap; box-shadow: none;
+        }
+        .btn-header-back:hover { background: var(--primary-light); }
         
         /* 레이아웃 */
         #app-header {
@@ -175,6 +181,16 @@
         .stamp-icon { font-size: 2.5rem; margin-bottom: 5px; }
         .stamp-text { font-weight: bold; font-size: 0.9rem; word-break: keep-all;}
 
+        /* 작은 화면에서 상단 메뉴가 겹치지 않도록 조정 */
+        @media (max-width: 760px) {
+            #app-header { padding: 0 8px; }
+            #app-header h2 { display: none; }
+            #app-header .gap-4 { gap: 0.4rem; }
+            #header-step-info { font-size: 0.82rem; }
+            .money-display { font-size: 1rem; gap: 3px; }
+            .btn-header-back { padding: 7px 10px; font-size: 0.92rem; }
+        }
+
         /* 인쇄용 CSS */
         @media print {
             body { background: white; color: black; margin: 0; padding: 0; }
@@ -214,6 +230,7 @@
     <header id="app-header" class="no-print">
         <div class="flex items-center gap-3">
             <button class="btn-icon" onclick="game.resetWithConfirm()" title="처음으로">🏠</button>
+            <button id="header-back-btn" class="btn-header-back hidden" onclick="game.prevStep()" title="이전 페이지로 돌아가기">← 뒤로</button>
             <h2 style="margin: 0; font-size: 1.2rem;">제경이의 부산 마음 배송 작전</h2>
         </div>
         <div class="flex items-center gap-4">
@@ -706,6 +723,19 @@
                 }
             },
             prevStep: function() {
+                // 열린 팝업이나 장바구니가 있으면 먼저 닫기
+                const modal = document.querySelector('#modal-container .modal-overlay');
+                if (modal) { this.closeModal(); return; }
+                document.getElementById('cart-sidebar').classList.remove('open');
+
+                // 마지막 편지 미리보기 화면에서는 먼저 편지 작성 화면으로 돌아가기
+                const previewArea = document.getElementById('print-letter-area');
+                if (state.step === 7 && previewArea && !previewArea.classList.contains('hidden')) {
+                    this.hideLetterPreview();
+                    window.scrollTo(0, 0);
+                    return;
+                }
+
                 if(state.step > 1) {
                     state.step--;
                     this.saveState();
@@ -729,6 +759,10 @@
 
             updateHeader: function() {
                 document.getElementById('header-step-info').innerText = `STEP ${state.step} / 7`;
+
+                // 첫 화면을 제외한 모든 페이지에서 상단 뒤로가기 버튼 표시
+                const backBtn = document.getElementById('header-back-btn');
+                if (backBtn) backBtn.classList.toggle('hidden', state.step === 1);
                 
                 // 예산 계산
                 const calc = this.calculateCart();
