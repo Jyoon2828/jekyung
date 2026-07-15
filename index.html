@@ -153,15 +153,15 @@
         .letter-paper {
             background-color: #FFFBF0; border: 1px solid #E5D5B5; border-radius: 10px;
             padding: 40px; box-shadow: inset 0 0 20px rgba(0,0,0,0.02), 0 4px 8px rgba(0,0,0,0.05);
-            font-family: 'Nanum Pen Script', 'Malgun Gothic', cursive; /* 감성적인 폰트 흉내 */
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
             position: relative; overflow: hidden;
         }
         .letter-paper::before {
             content: '🌊 🚢 🌉'; position: absolute; top: 10px; right: 20px; font-size: 1.2rem; opacity: 0.5; letter-spacing: 5px;
         }
         .letter-title { text-align: center; font-size: 2rem; color: var(--primary); margin-bottom: 30px; border-bottom: 2px dashed #E5D5B5; padding-bottom: 10px;}
-        .letter-content { font-size: 1.2rem; line-height: 2; white-space: pre-wrap; }
-        .letter-footer { text-align: right; margin-top: 40px; font-size: 1.2rem; font-weight: bold; }
+        .letter-content { font-size: 1.2rem; line-height: 2; white-space: pre-wrap; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+        .letter-footer { text-align: right; margin-top: 40px; font-size: 1.2rem; font-weight: bold; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; }
         .helper-text { background: #FFFFE0; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--secondary); font-size: 1rem;}
 
         /* 결과 도장 */
@@ -558,9 +558,11 @@
                     </div>
                 </div>
                 
-                <div class="flex justify-center gap-3 mt-4 no-print">
+                <div class="mt-4 no-print" style="text-align:center;">
+                    <div style="background:#FFF8D9; border:2px solid #F2D16B; border-radius:12px; padding:14px 18px; margin-bottom:14px; font-weight:bold; color:#5A4A14;">
+                        📸 편지를 다 썼다면 태블릿의 화면 캡처 기능으로 편지글을 저장하세요.
+                    </div>
                     <button class="btn-outline" onclick="game.hideLetterPreview()">✍️ 편지 수정하기</button>
-                    <button class="btn-primary" id="btn-download" onclick="game.downloadImage()">📥 이미지 다운로드</button>
                 </div>
             </div>
         </div>
@@ -1193,101 +1195,6 @@
                 document.getElementById('stamps-area').parentElement.classList.remove('hidden');
                 document.getElementById('btn-preview-letter').parentElement.classList.remove('hidden');
                 document.getElementById('print-letter-area').classList.add('hidden');
-            },
-
-            // 이미지 다운로드 기능 (외부 라이브러리 없이 네이티브 Canvas + SVG 활용)
-            downloadImage: function() {
-                const btn = document.getElementById('btn-download');
-                btn.innerText = '⏳ 이미지 만드는 중...';
-                btn.disabled = true;
-
-                const letterNode = document.querySelector('.letter-paper');
-                const clone = letterNode.cloneNode(true);
-                
-                // SVG 렌더링 시 브라우저 보안(Tainted Canvas)으로 인해 외부 이미지가 차단되는 것을 방지하고자, 
-                // 다운로드할 이미지에는 안전한 대체 이모지를 표시하도록 처리합니다.
-                const images = clone.querySelectorAll('img');
-                images.forEach(img => {
-                    img.style.display = 'none';
-                    if(img.nextElementSibling) img.nextElementSibling.style.display = 'inline-block';
-                });
-
-                // 이미지화할 고정 크기 설정 (비율 유지를 위해 800px로 고정)
-                const width = 800;
-                clone.style.width = width + 'px';
-                clone.style.position = 'absolute';
-                clone.style.top = '-9999px';
-                clone.style.display = 'block';
-                document.body.appendChild(clone);
-                
-                const height = clone.offsetHeight;
-                
-                // SVG 내부에 편지지 디자인에 필요한 필수 CSS 주입
-                const style = `
-                    .letter-paper {
-                        background-color: #FFFBF0; border: 1px solid #E5D5B5; border-radius: 10px;
-                        padding: 40px; box-shadow: inset 0 0 20px rgba(0,0,0,0.02), 0 4px 8px rgba(0,0,0,0.05);
-                        font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-                        position: relative; overflow: hidden; box-sizing: border-box;
-                    }
-                    .letter-paper::before { content: '🌊 🚢 🌉'; position: absolute; top: 10px; right: 20px; font-size: 1.2rem; opacity: 0.5; letter-spacing: 5px; }
-                    .letter-title { text-align: center; font-size: 2rem; color: #0078D7; margin-bottom: 30px; border-bottom: 2px dashed #E5D5B5; padding-bottom: 10px; font-weight:bold;}
-                    .letter-content { font-size: 1.2rem; line-height: 2; white-space: pre-wrap; color: #333;}
-                    .letter-footer { text-align: right; margin-top: 40px; font-size: 1.2rem; font-weight: bold; color: #333;}
-                `;
-
-                const svg = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-                        <style>${style}</style>
-                        <foreignObject width="100%" height="100%">
-                            <div xmlns="http://www.w3.org/1999/xhtml">
-                                ${clone.outerHTML}
-                            </div>
-                        </foreignObject>
-                    </svg>
-                `;
-                
-                document.body.removeChild(clone);
-
-                const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                
-                const img = new Image();
-                img.crossOrigin = "Anonymous";
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    
-                    // 여백 채우기
-                    ctx.fillStyle = '#F4F9FC';
-                    ctx.fillRect(0, 0, width, height);
-                    ctx.drawImage(img, 0, 0);
-                    
-                    URL.revokeObjectURL(url);
-                    
-                    try {
-                        const dataUrl = canvas.toDataURL('image/png');
-                        const a = document.createElement('a');
-                        a.href = dataUrl;
-                        a.download = '제경이의_편지.png';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                    } catch(e) {
-                        alert("이미지 저장에 실패했습니다. 브라우저 보안 정책 때문일 수 있습니다.");
-                    } finally {
-                        btn.innerText = '📥 이미지 다운로드';
-                        btn.disabled = false;
-                    }
-                };
-                img.onerror = function() {
-                    alert("이미지 생성 중 오류가 발생했습니다.");
-                    btn.innerText = '📥 이미지 다운로드';
-                    btn.disabled = false;
-                };
-                img.src = url;
             },
 
             // 모달 공통 로직
