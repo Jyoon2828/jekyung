@@ -23,6 +23,10 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: var(--font-main); background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; user-select: none; }
+        #main-content {
+            background-image: linear-gradient(rgba(244,249,252,0.88), rgba(244,249,252,0.94)), url('./assets/busan_background.png?v=2');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
         
         /* 유틸리티 클래스 */
         .hidden { display: none !important; }
@@ -101,8 +105,9 @@
             display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;
         }
         .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .item-icon-wrapper { font-size: 4rem; text-align: center; margin-bottom: 15px; height: 80px; display: flex; align-items: center; justify-content: center;}
-        .item-icon-wrapper img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .item-icon-wrapper { font-size: 4rem; text-align: center; margin-bottom: 15px; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 14px; background: #f8fbfd;}
+        .item-icon-wrapper img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .detail-product-image { max-width:100%; max-height:100%; object-fit:contain; }
         .item-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; color: var(--primary); }
         .item-price { font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; }
         .tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-right: 5px; margin-bottom: 5px; }
@@ -113,7 +118,9 @@
         /* 말풍선 */
         .bubble-container { display: flex; gap: 20px; margin-bottom: 30px; }
         .character { width: 100px; text-align: center; font-weight: bold; }
-        .char-img { font-size: 4rem; width: 80px; height: 80px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+        .char-img { font-size: 4rem; width: 100px; height: 100px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; overflow: hidden; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,.12); }
+        .char-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+        .start-hero { width: min(270px, 70vw); height: 260px; object-fit: contain; display: block; margin: 0 auto 18px; filter: drop-shadow(0 8px 12px rgba(0,0,0,.12)); }
         .speech-bubble {
             background: var(--white); border: 2px solid var(--border); border-radius: 20px; padding: 20px;
             position: relative; flex: 1;
@@ -256,7 +263,7 @@
         <!-- 1단계: 시작 화면 -->
         <div id="step-1" class="step-container">
             <div class="text-center mb-4">
-                <div style="font-size: 5rem; margin-bottom: 20px;">🧳🚄🌉</div>
+                <img class="start-hero" src="./assets/jekyung.png?v=2" alt="부산으로 돌아온 제경이" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div style="display:none; font-size:5rem; margin-bottom:20px;">🧳🚄🌉</div>
                 <h1>여름방학이 끝나고 부산으로 돌아온 제경이!</h1>
                 <p class="mt-4">제경이는 방학 동안 경북에서 자신을 잘 돌봐준 할머니와 함께 공부한 영남이에게 고마운 마음을 전하고 싶어요.</p>
                 <p>하지만 제경이가 가진 돈은 <strong>30,000원</strong>뿐이에요.</p>
@@ -284,7 +291,7 @@
             
             <div class="bubble-container">
                 <div class="character">
-                    <div class="char-img">👵</div>
+                    <div class="char-img"><img src="./assets/grandma.png?v=2" alt="할머니" onerror="this.style.display='none'; this.parentElement.textContent='👵';"></div>
                     <div>할머니</div>
                 </div>
                 <div class="speech-bubble">
@@ -309,7 +316,7 @@
 
             <div class="bubble-container">
                 <div class="character">
-                    <div class="char-img">👦</div>
+                    <div class="char-img"><img src="./assets/youngnam.png?v=2" alt="영남이" onerror="this.style.display='none'; this.parentElement.textContent='👦';"></div>
                     <div>영남이</div>
                 </div>
                 <div class="speech-bubble">
@@ -578,17 +585,17 @@
         };
 
         const PRODUCT_DATA = [
-            { id: "p1", name: "부산어묵 선물팩", price: 9000, storage: "냉장", cooking: "데우기", coldShippingRequired: true, recommendedFor: ["할머니", "영남이"], description: "부산의 대표적인 가공 수산물로 여러 가지 모양과 맛을 즐길 수 있다.", advantage: "부산의 특징이 잘 드러나고 여러 사람이 나누어 먹기 좋다.", consideration: "냉장 배송비가 추가되고 보관 공간이 필요하다.", emoji: "🍢", image: "assets/product_fishcake.png" },
-            { id: "p2", name: "기장미역", price: 6000, storage: "실온", cooking: "조리 필요(국)", coldShippingRequired: false, recommendedFor: ["할머니"], description: "부산 기장 바다에서 생산되는 부산의 대표적인 특산물이다.", advantage: "오래 보관할 수 있고 건강한 국이나 반찬으로 활용할 수 있다.", consideration: "간식으로 바로 먹을 수 없으며 직접 조리해야 한다.", emoji: "🌿", image: "assets/product_seaweed.png" },
-            { id: "p3", name: "기장멸치", price: 7000, storage: "실온", cooking: "조리 필요(반찬)", coldShippingRequired: false, recommendedFor: ["할머니"], description: "부산 기장 지역의 바다와 관련된 대표적인 수산물이다.", advantage: "반찬과 국물 재료 등 여러 가지 방법으로 활용할 수 있다.", consideration: "비린 맛을 좋아하지 않는 사람도 있고 직접 조리해야 한다.", emoji: "🐟", image: "assets/product_anchovy.png" },
-            { id: "p4", name: "부산 명란", price: 8000, storage: "냉장", cooking: "바로 먹음/조리", coldShippingRequired: true, recommendedFor: ["할머니"], description: "부산에서 생산하고 가공하는 대표적인 수산 식품 중 하나이다.", advantage: "밥과 함께 먹기 좋고 부산의 수산물 문화를 소개할 수 있다.", consideration: "냉장 배송비가 추가되고 짠 음식을 싫어하는 사람에게는 알맞지 않을 수 있다.", emoji: "🥢", image: "assets/product_pollackroe.png" },
-            { id: "p5", name: "부산 김 선물세트", price: 5000, storage: "실온", cooking: "바로 먹음", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산의 바다와 관련된 가공 수산물이다.", advantage: "가볍고 오래 보관할 수 있으며 여러 사람이 나누어 먹기 좋다.", consideration: "다른 상품보다 부산만의 특징이 약하게 느껴질 수 있다.", emoji: "🟩", image: "assets/product_seaweed_snack.png" },
-            { id: "p6", name: "구포국수", price: 4000, storage: "실온", cooking: "조리 필요(삶기)", coldShippingRequired: false, recommendedFor: ["할머니"], description: "부산 구포 지역과 관련된 전통적인 국수 상품이다.", advantage: "가격이 저렴하고 오래 보관할 수 있으며 여러 끼에 나누어 먹을 수 있다.", consideration: "직접 삶고 국물이나 양념을 준비해야 한다.", emoji: "🍜", image: "assets/product_gupo_noodle.png" },
-            { id: "p7", name: "씨앗호떡 만들기 세트", price: 6000, storage: "실온", cooking: "조리 필요(굽기)", coldShippingRequired: false, recommendedFor: ["영남이"], description: "부산의 유명한 간식인 씨앗호떡을 집에서 만들어 볼 수 있는 상품이다.", advantage: "친구나 가족과 함께 만들며 부산의 먹거리를 체험할 수 있다.", consideration: "바로 먹을 수 없고 조리 과정이 필요하다.", emoji: "🥞", image: "assets/product_hotteok.png" },
-            { id: "p8", name: "대저토마토 가공 간식", price: 6000, storage: "실온", cooking: "바로 먹음", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산 대저 지역의 토마토를 활용하여 만든 가공 간식이다.", advantage: "부산의 농산물을 소개할 수 있고 간식으로 간편하게 먹을 수 있다.", consideration: "토마토 맛을 좋아하지 않는 사람에게는 알맞지 않을 수 있다.", emoji: "🍅", image: "assets/product_tomato.png" },
-            { id: "p9", name: "부산 밀면 만들기 세트", price: 6000, storage: "실온", cooking: "조리 필요(삶기)", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산에서 발달한 대표적인 면 음식인 밀면을 집에서 만들어 먹을 수 있는 간편조리 세트이다.", advantage: "부산의 대표 음식을 직접 체험할 수 있고 냉장 배송비가 들지 않는다.", consideration: "면을 삶고 육수와 양념을 준비해야 하므로 직접 조리해야 한다.", emoji: "🥣", image: "assets/product_milmyeon.png" },
-            { id: "p10", name: "부산 전병 선물세트", price: 6000, storage: "실온", cooking: "바로 먹음", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산에서 만들어지는 전통 과자 형태의 선물 상품이다.", advantage: "여러 사람이 나누어 먹기 좋고 보관하기 편리하다.", consideration: "배송 중 부서질 수 있으며 부산과의 관련성을 자세히 설명해야 한다.", emoji: "🍪", image: "assets/product_jeonbyeong.png" },
-            { id: "p11", name: "부산 돼지국밥 간편식", price: 9000, storage: "냉장", cooking: "조리 필요(데우기)", coldShippingRequired: true, recommendedFor: ["할머니", "영남이"], description: "돼지고기와 국물을 함께 끓여 먹는 부산의 대표적인 향토 음식을 간편하게 만든 상품이다.", advantage: "부산의 특징이 매우 잘 드러나고 든든한 한 끼 식사로 먹을 수 있다.", consideration: "냉장 배송비가 추가되고 데우거나 끓여야 하며, 돼지고기를 먹지 않는 사람에게는 알맞지 않다.", emoji: "🍲", image: "assets/product_pork_soup.png" }
+            { id: "p1", name: "부산어묵 선물팩", price: 9000, storage: "냉장", cooking: "데우기", coldShippingRequired: true, recommendedFor: ["할머니", "영남이"], description: "부산의 대표적인 가공 수산물로 여러 가지 모양과 맛을 즐길 수 있다.", advantage: "부산의 특징이 잘 드러나고 여러 사람이 나누어 먹기 좋다.", consideration: "냉장 배송비가 추가되고 보관 공간이 필요하다.", emoji: "🍢", image: "./assets/product_fishcake.png" },
+            { id: "p2", name: "기장미역", price: 6000, storage: "실온", cooking: "조리 필요(국)", coldShippingRequired: false, recommendedFor: ["할머니"], description: "부산 기장 바다에서 생산되는 부산의 대표적인 특산물이다.", advantage: "오래 보관할 수 있고 건강한 국이나 반찬으로 활용할 수 있다.", consideration: "간식으로 바로 먹을 수 없으며 직접 조리해야 한다.", emoji: "🌿", image: "./assets/product_seaweed.png" },
+            { id: "p3", name: "기장멸치", price: 7000, storage: "실온", cooking: "조리 필요(반찬)", coldShippingRequired: false, recommendedFor: ["할머니"], description: "부산 기장 지역의 바다와 관련된 대표적인 수산물이다.", advantage: "반찬과 국물 재료 등 여러 가지 방법으로 활용할 수 있다.", consideration: "비린 맛을 좋아하지 않는 사람도 있고 직접 조리해야 한다.", emoji: "🐟", image: "./assets/product_anchovy.png" },
+            { id: "p4", name: "부산 명란", price: 8000, storage: "냉장", cooking: "바로 먹음/조리", coldShippingRequired: true, recommendedFor: ["할머니"], description: "부산에서 생산하고 가공하는 대표적인 수산 식품 중 하나이다.", advantage: "밥과 함께 먹기 좋고 부산의 수산물 문화를 소개할 수 있다.", consideration: "냉장 배송비가 추가되고 짠 음식을 싫어하는 사람에게는 알맞지 않을 수 있다.", emoji: "🥢", image: "./assets/product_pollackroe.png" },
+            { id: "p5", name: "부산 김 선물세트", price: 5000, storage: "실온", cooking: "바로 먹음", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산의 바다와 관련된 가공 수산물이다.", advantage: "가볍고 오래 보관할 수 있으며 여러 사람이 나누어 먹기 좋다.", consideration: "다른 상품보다 부산만의 특징이 약하게 느껴질 수 있다.", emoji: "🟩", image: "./assets/product_seaweed_snack.png" },
+            { id: "p6", name: "구포국수", price: 4000, storage: "실온", cooking: "조리 필요(삶기)", coldShippingRequired: false, recommendedFor: ["할머니"], description: "부산 구포 지역과 관련된 전통적인 국수 상품이다.", advantage: "가격이 저렴하고 오래 보관할 수 있으며 여러 끼에 나누어 먹을 수 있다.", consideration: "직접 삶고 국물이나 양념을 준비해야 한다.", emoji: "🍜", image: "./assets/product_gupo_noodle.png" },
+            { id: "p7", name: "씨앗호떡 만들기 세트", price: 6000, storage: "실온", cooking: "조리 필요(굽기)", coldShippingRequired: false, recommendedFor: ["영남이"], description: "부산의 유명한 간식인 씨앗호떡을 집에서 만들어 볼 수 있는 상품이다.", advantage: "친구나 가족과 함께 만들며 부산의 먹거리를 체험할 수 있다.", consideration: "바로 먹을 수 없고 조리 과정이 필요하다.", emoji: "🥞", image: "./assets/product_hotteok.png" },
+            { id: "p8", name: "대저토마토 가공 간식", price: 6000, storage: "실온", cooking: "바로 먹음", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산 대저 지역의 토마토를 활용하여 만든 가공 간식이다.", advantage: "부산의 농산물을 소개할 수 있고 간식으로 간편하게 먹을 수 있다.", consideration: "토마토 맛을 좋아하지 않는 사람에게는 알맞지 않을 수 있다.", emoji: "🍅", image: "./assets/product_tomato.png" },
+            { id: "p9", name: "부산 밀면 만들기 세트", price: 6000, storage: "실온", cooking: "조리 필요(삶기)", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산에서 발달한 대표적인 면 음식인 밀면을 집에서 만들어 먹을 수 있는 간편조리 세트이다.", advantage: "부산의 대표 음식을 직접 체험할 수 있고 냉장 배송비가 들지 않는다.", consideration: "면을 삶고 육수와 양념을 준비해야 하므로 직접 조리해야 한다.", emoji: "🥣", image: "./assets/product_milmyeon.png" },
+            { id: "p10", name: "부산 전병 선물세트", price: 6000, storage: "실온", cooking: "바로 먹음", coldShippingRequired: false, recommendedFor: ["할머니", "영남이"], description: "부산에서 만들어지는 전통 과자 형태의 선물 상품이다.", advantage: "여러 사람이 나누어 먹기 좋고 보관하기 편리하다.", consideration: "배송 중 부서질 수 있으며 부산과의 관련성을 자세히 설명해야 한다.", emoji: "🍪", image: "./assets/product_jeonbyeong.png" },
+            { id: "p11", name: "부산 돼지국밥 간편식", price: 9000, storage: "냉장", cooking: "조리 필요(데우기)", coldShippingRequired: true, recommendedFor: ["할머니", "영남이"], description: "돼지고기와 국물을 함께 끓여 먹는 부산의 대표적인 향토 음식을 간편하게 만든 상품이다.", advantage: "부산의 특징이 매우 잘 드러나고 든든한 한 끼 식사로 먹을 수 있다.", consideration: "냉장 배송비가 추가되고 데우거나 끓여야 하며, 돼지고기를 먹지 않는 사람에게는 알맞지 않다.", emoji: "🍲", image: "./assets/product_pork_soup.png" }
         ];
 
         const FESTIVAL_DATA = [
@@ -623,9 +630,21 @@
             sound: true
         };
 
-        // 유틸리티: 이미지 오류 시 이모지 표시
+        // GitHub Pages·Vercel·로컬 실행에서 모두 동작하는 이미지 경로 처리
+        function assetUrl(src) {
+            try {
+                const url = new URL(src, document.baseURI);
+                url.searchParams.set('v', '2'); // 이전 이미지 캐시 방지
+                return url.href;
+            } catch (e) {
+                return src;
+            }
+        }
+
+        // 이미지 오류 시 이모지 표시
         function getImgHtml(src, emoji, cssClass="") {
-            return `<img src="${src}" class="${cssClass}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" alt="${emoji}">
+            const safeSrc = assetUrl(src);
+            return `<img src="${safeSrc}" class="${cssClass}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" alt="${emoji}">
                     <span class="${cssClass}" style="display:none; font-size: inherit;">${emoji}</span>`;
         }
         function formatMoney(num) { return num.toLocaleString() + '원'; }
@@ -974,7 +993,7 @@
             showProductDetail: function(id) {
                 const p = PRODUCT_DATA.find(x => x.id === id);
                 const html = `
-                    <div class="text-center mb-3"><span style="font-size:4rem">${p.emoji}</span></div>
+                    <div class="text-center mb-3" style="height:220px; display:flex; align-items:center; justify-content:center; background:#f8fbfd; border-radius:14px; overflow:hidden;">${getImgHtml(p.image, p.emoji, "detail-product-image")}</div>
                     <h3 class="text-center text-primary mb-2">${p.name}</h3>
                     <p class="text-center" style="font-size:1.3rem; font-weight:bold;">${formatMoney(p.price)}</p>
                     <hr style="margin:15px 0; border:0; border-top:1px dashed #ccc;">
